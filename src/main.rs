@@ -7,12 +7,16 @@ use envfile::EnvFile;
 use regex::Regex;
 use reqwest::{header, Response};
 use serde_json::{from_str, Value};
-use std::{env, fs::create_dir, fs::File, io::Write, path::Path};
+use std::{env, fs::create_dir, fs::File, io::Write, path::Path, process};
 use urlencoding::encode;
 
 #[tokio::main]
 async fn main() {
     let args: Vec<String> = env::args().collect();
+    if args.len() <= 1 {
+        println!("Usage: ./get-media-twitter [tweet-url]");
+        process::exit(1)
+    }
     let tweet_url = &args[1];
     let re = Regex::new(r"https://twitter.com/(.*)/status/(\d+)").unwrap();
     let caps = re.captures(&tweet_url).unwrap();
